@@ -2,8 +2,9 @@
 
 getFunctionMessage <- function(text, func){
   cat(format(Sys.time(),usetz = TRUE), 
-      " | Running function: " , func, "() \n", 
+      " | Function: " , func, "() | ", 
       text, "\n", sep = "")
 } # end of function getFunctionMessage 
 
 
+# usage: getFunctionMessage(text = , func = func)
