@@ -32,9 +32,10 @@ Numbered
 Links and images
 ------------------------------------------------------------
 
-<http://example.com>
+<link> for example <https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf>
 
-[linked phrase](http://example.com)
+[text phrase to the link]<link> for example
+[R markdown cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
 
 ![optional caption text](path/to/img.png)
 
@@ -46,17 +47,16 @@ First Header  | Second Header
 Content Cell  | Content Cell
 Content Cell  | Content Cell
 
-
 Other  
 ------------------------------------------------------------  
 Line break: end a line with 2 or more spaces  
 
-Use `back ticks` to specify inline code.
+Use `backticks` to specify inline code  
 
-superscript^2^ and subscript~2~
+superscript^2^ and subscript~2~  
 
-~~strikethrough~~
+~~strikethrough~~  
 
-tbd: inline equation $equation$
+tbd: inline equation $equation$  
 tbd: Display equation $$ equation $$
 
