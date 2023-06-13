@@ -64,9 +64,9 @@ compute.corr <- function(d, xNames, yNames = NULL, corMethod = "spearman", padjM
 
 # get corr Heatmap
 getCorrHeatmap <- function(res, padjThreshold = 1, fontsize = 15, xTitle = "", yTitle = "", folder,
-                       top_bar = TRUE, right_bar = TRUE, pdf.width = 10, pdf.height = 10,
-                       ht_row_fontsize = 10, ht_col_fontsize = 10,
-                       corMethod = "spearman"){
+                           top_bar = TRUE, right_bar = TRUE, pdf.width = 10, pdf.height = 10,
+                           ht_row_fontsize = 10, ht_col_fontsize = 10,
+                           corMethod = "spearman"){
   
   col_fun <- colorRamp2(c(-1,0,1), c("blue", "white", "red"))
   xNames <- colnames(res$corr)
@@ -95,8 +95,8 @@ getCorrHeatmap <- function(res, padjThreshold = 1, fontsize = 15, xTitle = "", y
   
   
   # top annotation barplot
-  posCor <- apply(res$corr, 2, FUN = function(x) sum(x > 0))
-  negCor <- apply(res$corr, 2, FUN = function(x) sum(x < 0))
+  posCor <- apply(as.matrix(res$corr), 2, FUN = function(x) sum(x > 0))
+  negCor <- apply(as.matrix(res$corr), 2, FUN = function(x) sum(x < 0))
   if (top_bar){     ha <- HeatmapAnnotation(freq = anno_barplot(cbind(negCor, posCor), 
                                                                 gp = gpar(fill = c("blue", "red"), col = "white"), #
                                                                 border = FALSE, height = unit(3, "cm")), 
@@ -106,8 +106,8 @@ getCorrHeatmap <- function(res, padjThreshold = 1, fontsize = 15, xTitle = "", y
   gapanno2 <- HeatmapAnnotation(emp = anno_empty(border = FALSE), show_annotation_name = FALSE)
   
   # right annotation barplot
-  posCor_rt <- apply(res$corr, 1, FUN = function(x) sum(x > 0))
-  negCor_rt <- apply(res$corr, 1, FUN = function(x) sum(x < 0))
+  posCor_rt <- apply(as.matrix(res$corr), 1, FUN = function(x) sum(x > 0))
+  negCor_rt <- apply(as.matrix(res$corr), 1, FUN = function(x) sum(x < 0))
   if (right_bar){     ha_rt <- rowAnnotation(freq = anno_barplot(cbind(negCor_rt, posCor_rt), 
                                                                  gp = gpar(fill = c("blue", "red"), col = "white"), #
                                                                  border = FALSE, width = unit(3, "cm")), #height = unit(3, "cm")), 
@@ -155,9 +155,9 @@ getCorrHeatmap <- function(res, padjThreshold = 1, fontsize = 15, xTitle = "", y
 
 # get corr Heatmap based on p-values
 getCorrHeatmap_p <- function(res, pvalue = 0.05, fontsize = 15, xTitle = "", yTitle = "", folder,
-                         top_bar = TRUE, right_bar = TRUE, pdf.width = 10, pdf.height = 10,
-                         ht_row_fontsize = 10, ht_col_fontsize = 10,
-                         corMethod = "spearman"){
+                             top_bar = TRUE, right_bar = TRUE, pdf.width = 10, pdf.height = 10,
+                             ht_row_fontsize = 10, ht_col_fontsize = 10,
+                             corMethod = "spearman"){
   
   col_fun <- colorRamp2(c(-1,0,1), c("blue", "white", "red"))
   xNames <- colnames(res$corr)
@@ -180,8 +180,8 @@ getCorrHeatmap_p <- function(res, pvalue = 0.05, fontsize = 15, xTitle = "", yTi
   heat_row_title <- paste(yTitle, ", n = ", length(rowKeep), " | ", length(yNames), sep = "")
   
   # top annotation barplot
-  posCor <- apply(res$corr, 2, FUN = function(x) sum(x > 0))
-  negCor <- apply(res$corr, 2, FUN = function(x) sum(x < 0))
+  posCor <- apply(as.matrix(res$corr), 2, FUN = function(x) sum(x > 0))
+  negCor <- apply(as.matrix(res$corr), 2, FUN = function(x) sum(x < 0))
   if (top_bar){     ha <- HeatmapAnnotation(freq = anno_barplot(cbind(negCor, posCor), 
                                                                 gp = gpar(fill = c("blue", "red"), col = "white"), #
                                                                 border = FALSE, height = unit(3, "cm")), 
@@ -191,8 +191,8 @@ getCorrHeatmap_p <- function(res, pvalue = 0.05, fontsize = 15, xTitle = "", yTi
   gapanno2 <- HeatmapAnnotation(emp = anno_empty(border = FALSE), show_annotation_name = FALSE)
   
   # right annotation barplot
-  posCor_rt <- apply(res$corr, 1, FUN = function(x) sum(x > 0))
-  negCor_rt <- apply(res$corr, 1, FUN = function(x) sum(x < 0))
+  posCor_rt <- apply(as.matrix(res$corr), 1, FUN = function(x) sum(x > 0))
+  negCor_rt <- apply(as.matrix(res$corr), 1, FUN = function(x) sum(x < 0))
   if (right_bar){     ha_rt <- rowAnnotation(freq = anno_barplot(cbind(negCor_rt, posCor_rt), 
                                                                  gp = gpar(fill = c("blue", "red"), col = "white"), #
                                                                  border = FALSE, width = unit(3, "cm")), #height = unit(3, "cm")), 
@@ -236,10 +236,5 @@ getCorrHeatmap_p <- function(res, pvalue = 0.05, fontsize = 15, xTitle = "", yTi
   )
   
 } # end of function getCorrHeatmap_p
-
-
-
-
-
 
 
