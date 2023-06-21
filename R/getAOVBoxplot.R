@@ -3,36 +3,35 @@
 # specify the names of continuous traits in the argument yNames: yNames = colnames()[c()] or yNames = c("","","")
 
 getAOVBoxplot <- function(data, xNames, yNames, folder = NULL,
-                         theme_size = 20, text_size = 10){
+                          theme_size = 20, text_size = 10){
   library(ggplot2)
   library(gridExtra)
   
   if (is.null(folder)) folder <- "output/AOV_Boxplots"
   createDir(folder = folder)
   
-  box_plot <- list()
   for (x in xNames){
-    for (y in yNames){
-      bname <- paste0("xy_", x, y) # boxplot name, combination of x and y
+    dfAOV <- lapply(yNames, FUN = function(y){
+      aov(data[, y] ~ data[, x] , data = data)
+    }) # end of sapply in y
+    names(dfAOV) <- yNames
+    
+    box_plot <- lapply(yNames, FUN = function(y){
+      aov.p <- summary(dfAOV[[y]])[[1]][1,5]
       
-      aov <- aov(data[, y] ~ data[, x] , data = data)
-      aov.p <- summary(aov)[[1]][1,5]
-      
-      box_plot[[bname]] <- ggplot(data, aes(x = factor(data[, x]), y=data[,y])) +
+      ggplot(data, aes(x = factor(data[, x]), y=data[,y])) +
         geom_violin(trim = TRUE, width = 0.3, size = 1.5) +
         geom_boxplot(width=0.1, color="grey", alpha=0.1) +
         stat_summary(fun = "mean",
                      geom = "point",
                      color = "red") +
         xlab(x) + ylab(y) +
-        labs(caption = paste("AOV p-value: ", round(aov.p, 4), sep = "")) +
+        labs(caption = paste("AOV p-value: ", scientific(aov.p), sep = "")) +
         theme_bw(theme_size)
-    } # end of for loop in t
+    }) # end of lapply in y
+    
+    pdf(paste(folder, paste0("AOV_Boxplots_", x, ".pdf"), sep = "/"), height = 8, width = 8)
+    print(box_plot)
+    dev.off()
   } # end of for loop in x
-  
-  pdf(paste(folder, "AOV_Boxplots.pdf", sep = "/"), height = 8, width = 8)
-  print(box_plot)
-  dev.off()
-  
-  return(list("boxplots" = box_plot))
 } # end of function getAOVBoxplot
