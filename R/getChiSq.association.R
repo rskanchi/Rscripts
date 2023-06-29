@@ -3,6 +3,10 @@
 # bar plots with counts and proportions generated
 
 get.association.barplot <- function(xydata, x, y, p){
+  library(ggplot2)
+  library(patchwork)
+  library(scales)
+  
   p1 <- ggplot(xydata, aes(x = xydata[, y], fill = xydata[, x])) +
     geom_bar(show.legend = FALSE) +
     xlab(y) + #ylab(pvar) +
@@ -18,8 +22,15 @@ get.association.barplot <- function(xydata, x, y, p){
 }
 
 getChiSq.association <- function(data, xNames, yNames, output_folder, ...){
-  # later coding - check if the xNames and yNames are factors
+  library(ggplot2)
+
   createDir(output_folder)
+  
+  # # make the variables factor if not already
+  # for (v in c(xNames, yNames)){
+  #   if (!is.factor(data[, v])) data[,v] <- factor(data[, v])
+  # } # end of for in v
+  
   for(ovar in yNames){
     # chi sq test of association between the 
     dfChi <- t(sapply(xNames, FUN = function(x){
