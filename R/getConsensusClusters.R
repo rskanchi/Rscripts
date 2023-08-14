@@ -1,5 +1,5 @@
 # function to get consensus clusters of the columns of a dataframe
-# make sure folder says expr or sample
+
 getConsensusClusters <- function(d, folder, dist.method = "spearman", clusterAlg = "hc", 
                                  innerLinkage = "ward.D", finalLinkage = "ward.D",
                                  maxK = 8, nReps = 500, pItem = 0.9, pFeature = 1, corUse = "pairwise.complete.obs", 
@@ -11,8 +11,8 @@ getConsensusClusters <- function(d, folder, dist.method = "spearman", clusterAlg
   if (!dir.exists(folder)){ dir.create(folder, recursive = TRUE) }
   
   if (dist.method == "spearman" | dist.method == "pearson")
-    distMat <- as.dist(1-cor(d, use = corUse, method = dist.method)) else # cor() returns cor between cols of matrix
-      distMat <- as.dist(d, method = dist.method)
+    distMat <- as.dist(1-cor(d, use = corUse, method = dist.method)) else # cor() returns cor between cols of dataframe
+      distMat <- as.dist(dist(t(d), method = dist.method)) # dist() returns dist between rows of the dataframe so t(d)
     
     write.csv(as.matrix(distMat), file = paste(folder, paste0("distMat_", dist.method, ".csv"), sep = "/"), row.names = TRUE)
     
