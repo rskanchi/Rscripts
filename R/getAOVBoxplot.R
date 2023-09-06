@@ -6,7 +6,7 @@ getAOVBoxplot <- function(data, xNames, yNames, folder = NULL,
                           theme_size = 20, text_size = 10){
   library(ggplot2)
   library(gridExtra)
-  
+  library(scales) # scientific()
   if (is.null(folder)) folder <- "output/AOV_Boxplots"
   createDir(folder = folder)
   
@@ -18,7 +18,7 @@ getAOVBoxplot <- function(data, xNames, yNames, folder = NULL,
     
     box_plot <- lapply(yNames, FUN = function(y){
       aov.p <- summary(dfAOV[[y]])[[1]][1,5]
-      
+      tbl.n <- table(data[, x])
       ggplot(data, aes(x = factor(data[, x]), y=data[,y])) +
         geom_violin(trim = TRUE, width = 0.3, size = 1.5) +
         geom_boxplot(width=0.1, color="grey", alpha=0.1) +
@@ -26,7 +26,9 @@ getAOVBoxplot <- function(data, xNames, yNames, folder = NULL,
                      geom = "point",
                      color = "red") +
         xlab(x) + ylab(y) +
-        labs(caption = paste("AOV p-value: ", scientific(aov.p), sep = "")) +
+        labs(caption = paste(paste("AOV p-value: ", scientific(aov.p), sep = ""),
+              paste(names(tbl.n), tbl.n, sep = " = ", collapse = ", "), sep = "\n")) +
+        #labs(caption = paste("AOV p-value: ", scientific(aov.p), sep = "")) +
         theme_bw(theme_size)
     }) # end of lapply in y
     
