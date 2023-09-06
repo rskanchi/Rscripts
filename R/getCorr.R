@@ -203,6 +203,9 @@ getCorrHeatmap_p <- function(res, pvalue = 0.05, fontsize = 15, xTitle = "", yTi
     gapanno +  
       Heatmap(res$corr, name = corMethod,
               col = col_fun, # color
+              cell_fun = function(j, i, x, y, width, height, fill) {
+                grid.text(sprintf("%.3f", res$corr[i, j]), x, y, gp = gpar(fontsize = 10))
+              },
               show_row_names = TRUE, cluster_rows = TRUE, #row_names_side = "left",
               row_names_gp = gpar(fontsize = ht_row_fontsize),
               show_column_names = TRUE, cluster_columns = TRUE, 
