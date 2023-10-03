@@ -7,6 +7,10 @@ get.association.barplot <- function(xydata, x, y, pval, theme_size =15){
   library(patchwork)
   library(scales)
   
+  
+  xydata <- na.omit(xydata)
+  nY <- table(xydata[, y])
+  
   p1 <- ggplot(xydata, aes(x = xydata[, y], fill = xydata[, x])) +
     geom_bar(show.legend = FALSE) +
     xlab(y) + #ylab(pvar) +
@@ -16,6 +20,8 @@ get.association.barplot <- function(xydata, x, y, pval, theme_size =15){
     geom_bar(position = "fill") +
     xlab(y) + ylab("proportion") +
     labs(fill = x) +
+    stat_n_text() +
+    #geom_text(aes(label = paste("n =", nY))) +
     theme_bw(theme_size)
   
   p1 + p2 + plot_annotation(title = paste("chisq p-value =", scientific(pval))) 
