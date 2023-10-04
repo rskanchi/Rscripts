@@ -157,7 +157,7 @@ getCorrHeatmap <- function(res, padjThreshold = 1, fontsize = 15, xTitle = "", y
 getCorrHeatmap_p <- function(res, pvalue = 0.05, fontsize = 15, xTitle = "", yTitle = "", folder,
                              top_bar = TRUE, right_bar = TRUE, pdf.width = 10, pdf.height = 10,
                              ht_row_fontsize = 10, ht_col_fontsize = 10,
-                             corMethod = "spearman"){
+                             corMethod = "spearman", cell_label = FALSE){
   
   col_fun <- colorRamp2(c(-1,0,1), c("blue", "white", "red"))
   xNames <- colnames(res$corr)
@@ -203,8 +203,8 @@ getCorrHeatmap_p <- function(res, pvalue = 0.05, fontsize = 15, xTitle = "", yTi
     gapanno +  
       Heatmap(res$corr, name = corMethod,
               col = col_fun, # color
-              cell_fun = function(j, i, x, y, width, height, fill) {
-                grid.text(sprintf("%.3f", res$corr[i, j]), x, y, gp = gpar(fontsize = 10))
+              cell_fun = if (cell_label) function(j, i, x, y, width, height, fill) {
+                grid.text(sprintf("%.3f", res$corr[i, j]), x, y, gp = gpar(fontsize = 4))
               },
               show_row_names = TRUE, cluster_rows = TRUE, #row_names_side = "left",
               row_names_gp = gpar(fontsize = ht_row_fontsize),
