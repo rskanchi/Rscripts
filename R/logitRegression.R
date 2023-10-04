@@ -1,6 +1,7 @@
 # function to perform logit regression
 
-logitRegression <- function(data, outcome, continuos_predictors, ordinal_predictors, nominal_predictors, output_dir = NULL, ...){
+logitRegression <- function(data, outcome, continuos_predictors, ordinal_predictors, 
+                            nominal_predictors, output_dir = NULL, ...){
   library(finalfit)
   library(ggplot2)
   library(ggpubr)
@@ -8,21 +9,24 @@ logitRegression <- function(data, outcome, continuos_predictors, ordinal_predict
   library(broom)
   library(patchwork)
 
-  if (is.NULL(output_dir)) output_dir <- paste("logit_analysis_output", outcome, sep = "/")
+  if (is.null(output_dir)) output_dir <- paste("logit_analysis_output", outcome, sep = "/")
   createDir(output_dir)
   
   # outcome variable
   getPie(data = data, traits = outcome, folder = paste(output_dir, "Piecharts", "outcome", sep = "/"))
   
   # continuous predictors
-  # histograms
-  getHistogram(data = data, traits = continuos_predictors, folder = paste(output_dir, "histograms", sep = "/"))
-  # AOV boxplots for the continous predictors
-  getAOVBoxplot(data = data, xNames = outcome, yNames = continuos_predictors, folder = paste(output_dir, "AOVboxplots", sep = "/"))
+  if(!is.null(continuos_predictors)){
+    # histograms
+    getHistogram(data = data, traits = continuos_predictors, folder = paste(output_dir, "histograms", sep = "/"))
+    # AOV boxplots for the continous predictors
+    getAOVBoxplot(data = data, xNames = outcome, yNames = continuos_predictors, folder = paste(output_dir, "AOVboxplots", sep = "/"))
+  }
   
   # categorical predictors
   # chisq association of outcome with categorical (ordinal and nominal) predictors; barplots
   # pie charts 
+  
   getPie(data = data, traits = c(ordinal_predictors, nominal_predictors), 
          folder = paste(output_dir, "Piecharts", "predictors", sep = "/"))
   
