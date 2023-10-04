@@ -32,7 +32,7 @@ Numbered
 Links and images
 ------------------------------------------------------------
 
-[text phrase to the link](link) for example [R markdown cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+[R markdown cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
 
 ![optional caption text](path/to/img.png)
 
