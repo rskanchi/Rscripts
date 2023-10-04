@@ -1,7 +1,7 @@
-# get volcano plot
+# get volcano plot; the input data is an output from the differential expression analysis
 # xName = variable name for log FC
 # yName = variable name for either pvalue or adjusted pvalue
-# rowLabels = variable ame for the col containing genes, or the features
+# rowLabels = variable name for the col containing genes, or the features
 
 getVolcanoPlot <- function(data, xName, yName, featureCol, folder = NULL,
                            pcutoffs = c(0.25, 0.1, 0.05), # 
