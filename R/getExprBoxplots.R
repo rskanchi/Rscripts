@@ -1,6 +1,9 @@
 # d is the expression data with sample rows and expression columns 
 # uses the getTransformedData function
-
+# ADD:
+  # plot = generate or not option
+  # pdf file save or not option
+  
 getExprBoxplots <- function(d, dataTransformation = NULL, nVarexpr = NULL,
                             outlier.size = 0.2, outlier.color = "red", box.outline.color = "grey",
                             all_expr_boxplot = TRUE,
