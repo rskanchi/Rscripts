@@ -10,7 +10,7 @@ preProcess <- function(traitDataFile, exprDataFile,
   # this function 
   func <- "preProcess"
   # NAs list before reading data
-  na.list <- union(na.list, c(".", "", "Don't know","NA"))
+  na.list <- union(na.list, c(".", "", " ", "Don't know","NA"))
   
   filters <- data.frame(filter = c("trait_data_samples", "expr_data_samples", "expr_data_features",
                                    "common_samples", 
@@ -33,7 +33,7 @@ preProcess <- function(traitDataFile, exprDataFile,
   getFunctionMessage(text = paste("Number of features in expr file:", ncol(exprData)), func = func)
   
   # merge trait and expr data; samples in both the data sets are kept
-  getFunctionMessage(text = "Merging files ---------->", func = func)
+  getFunctionMessage(text = "---------- Merging files ----------", func = func)
   samplesCommon <- intersect(rownames(traitData), rownames(exprData))
   traitData <- traitData[samplesCommon, , drop = FALSE]
   exprData <- exprData[samplesCommon, , drop = FALSE]
@@ -42,8 +42,8 @@ preProcess <- function(traitDataFile, exprDataFile,
   getFunctionMessage(text = paste("Number of samples common to trait and expr data:", length(samplesCommon)), func = func)
   
   # remove expr that are all 0s
-  getFunctionMessage(text = "Removing features that are all 0s ---------->", func = func)
-  expr.notZero <- colSums(exprData) != 0
+  getFunctionMessage(text = "---------- Removing features that are all 0s ----------", func = func)
+  expr.notZero <- colSums(exprData, na.rm = TRUE) != 0
   #exprZero <- colSums(exprData) == 0
   exprData <- exprData[, expr.notZero, drop = FALSE]
   filters$value[filters$filter %in% c("after_removing_all_zero_expr")] <- c(ncol(exprData))
@@ -51,7 +51,7 @@ preProcess <- function(traitDataFile, exprDataFile,
   
   # remove expr that have 0 sd (no variation)
   getFunctionMessage(text = "Removing features that have sd=0 i.e., no variation ---------->", func = func)
-  expr.SDnot0 <- apply(exprData, 2, sd) != 0
+  expr.SDnot0 <- apply(exprData, 2, sd, na.rm = TRUE) != 0
   #exprSD0 <- apply(exprData, 2, sd) == 0
   exprData <- exprData[, expr.SDnot0, drop = FALSE]
   filters$value[filters$filter %in% c("after_removing_no_variation_expr")] <- c(ncol(exprData))
