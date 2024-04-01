@@ -3,7 +3,8 @@
 # specify the names of continuous traits in the argument yNames: yNames = colnames()[c()] or yNames = c("","","")
 
 getAOVBoxplot <- function(data, xNames, yNames, folder = NULL,
-                          theme_size = 20, text_size = 10){
+                          theme_size = 20, text_size = 10,
+                          pdf.height = 8, pdf.width = 8){
   library(ggplot2)
   library(gridExtra)
   library(scales) # scientific()
@@ -32,8 +33,9 @@ getAOVBoxplot <- function(data, xNames, yNames, folder = NULL,
         theme_bw(theme_size)
     }) # end of lapply in y
     
-    pdf(paste(folder, paste0("AOV_Boxplots_", x, ".pdf"), sep = "/"), height = 8, width = 8)
+    pdf(paste(folder, paste0("AOV_Boxplots_", x, ".pdf"), sep = "/"), height = pdf.height, width = pdf.width)
     print(box_plot)
     dev.off()
   } # end of for loop in x
+  #return(box_plot)
 } # end of function getAOVBoxplot
