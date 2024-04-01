@@ -1,5 +1,8 @@
 # d is the expression data with sample rows and expression columns 
-# uses the getTransformedData function
+# uses the getTransformedData function. Transformations:
+        #"log2" = "expression data (log2)",
+        #"scale" = "expression data (scaled)",
+        #"robustScale" = "expression data (median centered and IQR scaled)"
 # ADD:
   # plot = generate or not option
   # pdf file save or not option
@@ -9,8 +12,7 @@ getExprBoxplots <- function(d, dataTransformation = NULL, nVarexpr = NULL,
                             all_expr_boxplot = TRUE,
                             folder = NULL){
   
-  if (is.null(folder)) folder <- paste(getwd(), "output", "exprBoxplots", sep = "/") else
-    folder <- paste(getwd(), "output", "exprBoxplots", sep = "/")
+  if (is.null(folder)) folder <- paste(getwd(), "output", "exprBoxplots", sep = "/") 
   createDir(folder)
   
   getFunctionMessage(text = paste("output path:", folder), func = "getExprBoxplots")
@@ -87,10 +89,24 @@ getExprBoxplots <- function(d, dataTransformation = NULL, nVarexpr = NULL,
     dev.off()
   } # end of if in !is.null(dataTransformation)
   
-  if (is.null(dataTransformation) & is.null(nVarexpr)) return(list("d" = d)) else
-    if (!is.null(dataTransformation) & is.null(nVarexpr)) return(list("d" = d, "d.nVarexpr" = d.nVarexpr)) else
-      if (is.null(dataTransformation) & !is.null(nVarexpr)) return(list("d" = d, "d.trans" = d.trans)) else
-        return(list("d" = d, "d.nVarexpr" = d.nVarexpr, "d.trans" = d.trans))
+  if (is.null(dataTransformation) & is.null(nVarexpr)){
+    write.csv(d, file = paste(folder, "data.csv", sep = "/"))
+    return(list("d" = d))
+  } else if (is.null(dataTransformation) & !is.null(nVarexpr)) {
+    write.csv(d, file = paste(folder, "data.csv", sep = "/"))
+    write.csv(d.nVarexpr, file = paste0(folder, "/data_nVarexpr", nVarexpr, ".csv"))
+    return(list("d" = d, "d.nVarexpr" = d.nVarexpr))
+    
+  } else if (!is.null(dataTransformation) & is.null(nVarexpr)) {
+    write.csv(d, file = paste(folder, "data.csv", sep = "/"))
+    write.csv(d.trans, file = paste0(folder, "/data_transformation_", dataTransformation, ".csv"))
+    return(list("d" = d, "d.trans" = d.trans))
+  }  else {
+    write.csv(d, file = paste(folder, "data.csv", sep = "/"))
+    write.csv(d.nVarexpr, file = paste0(folder, "/data_nVarexpr", nVarexpr, ".csv"))
+    write.csv(d.trans, file = paste0(folder, "/data_transformation_", dataTransformation, ".csv"))
+    return(list("d" = d, "d.nVarexpr" = d.nVarexpr, "d.trans" = d.trans))
+  }
   
   cat("Boxplots folder location: ", paste(folder))
 } # end of function getExprBoxplots
