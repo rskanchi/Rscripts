@@ -1,16 +1,5 @@
-setwd("/Users/rupakanchi/01projects/Shneider_survival_proteomics")
-
-# outcomes: 
-# event 1 - death or liver transplant; no death cases. liver transplant = 15/93
-# months from age at FORCE dagnosis
-# time to LT = 2 outcomes; 1) time from age at FORCE diagnosis, 2) time from birth
-# event 2 - composite events (liver transplant, clinically evident ascites, variceal hemorrhage, HPS or hepatopulmonary syndrome); 19/93 
-# age at liver transplant is always more when compared to the others in the list above
-# the other events may happen before the age at FORCE diagnosis
-# if the baseline is age at FORCE diagnosis, some of the times will be negative
-# time to event = time from birth
-# of the 19 with events, 15 are LT, there are overlaps; exclusively LT are 
-
+# function to perform survial analysis using ML methods
+# data: the outcome (status, time) and predictors
 performSurvivalML <- function(data, # provide one of these two
                               #data_type = NULL, # "a tag for the data type, example "clinical", "proteome"
                               status, time, # specify column names in data that correspond to these
