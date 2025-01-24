@@ -1,56 +1,26 @@
+# function to perform upper-quartile (UQ) normalization for RNA-seq data
+# input: RNA-seq counts in csv file 
+# the functions filters lowly expressed genes and performs UQ normalization
 library(edgeR)
-library(tidyverse)
-library(RColorBrewer)
-library(openxlsx)
-library(ComplexHeatmap)
-library(circlize)
-
-performRNAseqUQnormalization <- function(work_dir, files){
-  setwd(work_dir) #setwd("/Users/coarfa/Research/IvanRosas/Loor/Exosome_Redux/")
-  # files <-c("EVLP_combined_combatseq_counts.06_20_2023.csv")
+performRNAseqUQnormalization <- function(data_file, min_CPM = 1, min_samples = 2) {
+  # Step 1: Load the data
+  raw_data <- read.csv(data_file)  
+  gene_info <- raw_data[, 1:3]  # First three columns are gene information
+  count_data <- raw_data[, -(1:3)]  # Remaining columns are sample counts
   
-  dlist <- map(files, read_csv)
-  names(dlist)<-files %>% basename %>% str_replace(".csv",".UQ.csv")
+  # Step 2: Filter lowly expressed genes
+  keep <- rowSums(cpm(count_data) > min_CPM) >= min_samples
+  filtered_count_data <- count_data[keep, ]
+  filtered_gene_info <- gene_info[keep, ]  # Subset gene info to match filtered rows
   
-  ylist<-map(dlist,~DGEList(counts = .x[,-1:-3],genes = .x[,1:3]))
-  ylist <- map(ylist,~UQfilter(x = .x,samples = 16))
-  ylist <- map(ylist,~calcNormFactors(object = .x,method = "upperquartile"))
+  # Step 3: Perform upper-quartile (UQ) normalization
+  dge <- DGEList(counts = filtered_count_data)
+  dge <- calcNormFactors(dge, method = "upperquartile")
+  normalized_data <- cpm(dge, normalized.lib.sizes = TRUE)
   
-  map2(.x = ylist,.y = c("protein.coding"),~UQheatmap(results = .x,label = "z-score log2CPM",column_cluster = T,row_cluster = T,nam = .y))
-  map2(.x = ylist,.y = str_c("CPM.",names(ylist)),~write_csv(x = cbind(.x$genes,cpm(y = .x)),path = .y))
-} # end of function performRNAseqUQnormalization
-
-UQheatmap <-function(results,label,column_cluster,row_cluster,nam){
-  results <- cbind(results$genes,cpm(results,log = T))
-  b <- results[,-1:-3]
-  b <- t(scale(t(b)))
-  df_scale<-b
+  # Combine normalized data with gene information for output
+  output_data <- cbind(filtered_gene_info, normalized_data)
   
-  if(!near(dim(df_scale)[1],0)){
-    
-    row.names(df_scale)<-results$GeneSymbol
-    
-    legend <- label
-    x<-abs(max(df_scale))
-    y<-abs(min(df_scale))
-    scale<-max(c(x,y))
-    
-    col_heatmap <- colorRamp2(c((-scale)*.75, 0,(scale)*.75), c("BLUE2", "white", "RED"))
-    xlsx.tbl<-df_scale%>%as.data.frame
-    print(head(xlsx.tbl))
-    print(ncol(xlsx.tbl))
-    print("table")
-    
-    wb <- createWorkbook()
-    addWorksheet(wb = wb,sheetName = "heatmap")
-    writeData(wb = wb,sheet = "heatmap",x = xlsx.tbl,rowNames = T)
-    conditionalFormatting(wb = wb,sheet = "heatmap",cols = 1:(ncol(xlsx.tbl)+1),rows =1:(nrow(xlsx.tbl)+1),style = c("blue","white","red"),rule = c(-2,0,2),type = "colourScale" )
-    saveWorkbook(wb = wb,file =str_c(nam,".xlsx"),overwrite = T )
-  } # end of if !near
-} # end of heatmap
-
-UQfilter <- function(x, samples){
-  keep <- rowSums(cpm(y = x, log = F) > 10) > samples
-  print(summary(keep))
-  return(x[keep, , keep.lib.sizes = FALSE])
-} # end of UQfilter
+  # Return the combined data
+  return(output_data)
+}
